@@ -1,0 +1,24 @@
+modLoader = "javafml"
+loaderVersion = "${fmlVersion}"
+license = "LGPLv3.0"
+
+[[mods]]
+modId = "refinedpolymorph"
+version = "${version}"
+displayName = "Refined Polymorphism"
+authors = "90"
+description = "Polymorph support for Refined Storage."
+
+[[dependencies.refinedpolymorph]]
+    modId = "refinedstorage"
+    mandatory = true
+    versionRange = "${rsVersion}"
+    ordering = "AFTER"
+    side = "SERVER"
+
+[[dependencies.refinedpolymorph]]
+    modId = "polymorph"
+    mandatory = true
+    versionRange = "${polymorphVersion}"
+    ordering = "AFTER"
+    side = "SERVER"
