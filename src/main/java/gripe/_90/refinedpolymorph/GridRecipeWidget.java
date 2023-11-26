@@ -23,11 +23,10 @@ public class GridRecipeWidget extends PersistentRecipesWidget {
         return outputSlot;
     }
 
-    @SuppressWarnings("resource")
     @Override
     public void selectRecipe(ResourceLocation id) {
         super.selectRecipe(id);
-        player.level().getRecipeManager().byKey(id).ifPresent(recipe -> {
+        player.getLevel().getRecipeManager().byKey(id).ifPresent(recipe -> {
             PolymorphApi.common().getRecipeData(player).ifPresent(data -> data.selectRecipe(recipe));
             RS.NETWORK_HANDLER.sendToServer(new GridRecipeSelectMessage(id));
         });

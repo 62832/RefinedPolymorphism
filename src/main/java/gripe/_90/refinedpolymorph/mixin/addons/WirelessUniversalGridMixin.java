@@ -1,9 +1,9 @@
 package gripe._90.refinedpolymorph.mixin.addons;
 
+import com.YTrollman.UniversalGrid.item.WirelessUniversalGrid;
 import com.illusivesoulworks.polymorph.common.crafting.RecipeSelection;
 import com.refinedmods.refinedstorage.api.network.grid.ICraftingGridListener;
 import com.refinedmods.refinedstorage.container.GridContainerMenu;
-import com.ultramega.universalgrid.item.WirelessUniversalGrid;
 import gripe._90.refinedpolymorph.CraftingGrid;
 import java.util.Optional;
 import java.util.Set;
