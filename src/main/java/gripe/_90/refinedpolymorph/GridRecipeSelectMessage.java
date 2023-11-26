@@ -15,7 +15,6 @@ public record GridRecipeSelectMessage(ResourceLocation recipeId) {
         return new GridRecipeSelectMessage(buf.readResourceLocation());
     }
 
-    @SuppressWarnings("resource")
     public static void handle(GridRecipeSelectMessage message, Supplier<NetworkEvent.Context> ctx) {
         var context = ctx.get();
         var player = context.getSender();
@@ -23,7 +22,7 @@ public record GridRecipeSelectMessage(ResourceLocation recipeId) {
         if (player != null) {
             context.enqueueWork(() -> {
                 if (player.containerMenu instanceof GridContainerMenu grid) {
-                    player.level()
+                    player.getLevel()
                             .getRecipeManager()
                             .byKey(message.recipeId())
                             .ifPresent(recipe -> RefinedPolymorphism.onSelect(recipe, grid.getGrid()));
