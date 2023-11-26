@@ -7,15 +7,17 @@ plugins {
 }
 
 val modId = "refinedpolymorph"
+val modVersion = (System.getenv("REFPOLY_VERSION") ?: "0.0.0").substringBefore('-')
+val minecraftVersion = libs.versions.minecraft.get()
 
-version = (System.getenv("REFPOLY_VERSION") ?: "0.0.0").substringBefore('-')
+version = "$modVersion-$minecraftVersion"
 group = "gripe.90"
 base.archivesName.set(modId)
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
 minecraft {
-    mappings("official", libs.versions.minecraft.get())
+    mappings("official", minecraftVersion)
 
     copyIdeResources.set(true)
 
@@ -24,12 +26,7 @@ minecraft {
             workingDirectory(project.file("run"))
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "info")
-
-            mods {
-                create(modId) {
-                    source(sourceSets.main.get())
-                }
-            }
+            mods.create(modId).source(sourceSets.main.get())
         }
 
         create("client")
@@ -75,7 +72,6 @@ dependencies {
     minecraft(libs.forge)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
 
-    // https://www.youtube.com/watch?v=GQPM4_fMIEg&t=44s
     implementation(fg.deobf(libs.refinedstorage.get(), closureOf<ModuleDependency> { isTransitive = false }))
     implementation(fg.deobf(libs.polymorph.get()))
 
@@ -100,8 +96,8 @@ tasks {
 
             if (!output.isNullOrEmpty()) {
                 val outputFile = File(output)
-                outputFile.appendText("MOD_VERSION=$version\n")
-                outputFile.appendText("MINECRAFT_VERSION=${libs.versions.minecraft.get()}\n")
+                outputFile.appendText("MOD_VERSION=$modVersion\n")
+                outputFile.appendText("MINECRAFT_VERSION=$minecraftVersion\n")
             }
         }
     }
@@ -111,7 +107,10 @@ tasks {
             "version" to project.version,
             "fmlVersion" to "[${libs.versions.loader.get()},)",
             "rsVersion" to "[${libs.versions.refinedstorage.get()},)",
-            "polymorphVersion" to "[${libs.versions.polymorph.get()},)"
+            "polymorphVersion" to "[${libs.versions.polymorph.get()},)",
+            "rsAddonsVersion" to "[${libs.versions.rsaddons.get()},)",
+            "rebornVersion" to "[${libs.versions.rebornstorage.get()},)",
+            "universalGridVersion" to "[${libs.versions.universalgrid.get()},)"
         )
 
         inputs.properties(replaceProperties)
@@ -161,6 +160,7 @@ spotless {
     json {
         target("src/*/resources/**/*.json")
         targetExclude("src/generated/resources/**")
-        prettier().config(mapOf("parser" to "json"))
+        rome()
+        endWithNewline()
     }
 }

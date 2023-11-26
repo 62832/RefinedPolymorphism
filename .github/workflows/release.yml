@@ -31,14 +31,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          curseforge-id: 914685
+          curseforge-id: 943086
           curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
 
-          modrinth-id: LkfFGNnA
+          modrinth-id: HwPAr6Pu
           modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
 
           version: ${{ steps.build.outputs.MOD_VERSION }}-${{ steps.build.outputs.MINECRAFT_VERSION }}
           game-versions: ${{ steps.build.outputs.MINECRAFT_VERSION }}
           dependencies: |
-            ae2(optional){curseforge:223794}{modrinth:XxWD5pD3}
-            powah(optional){curseforge:633483}{modrinth:KZO4S4DO}
+            refinedstorage(required){curseforge:243076}{modrinth:KDvYkUg3}
+            polymorph(required){curseforge:388800}{modrinth:tagwiZkJ}
+            refinedstorageaddons(optional){curseforge:272302}{modrinth:Z4Z5ccuT}
+            rebornstorage(optional){curseforge:256662}
+            universalgrid(optional){curseforge:536160}

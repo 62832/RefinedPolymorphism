@@ -1,18 +1,16 @@
 {
-  "minVersion": "0.8.5",
-  "required": true,
-  "refmap": "refinedpolymorph.refmap.json",
-  "package": "gripe._90.refinedpolymorph.mixin",
-  "plugin": "gripe._90.refinedpolymorph.mixin.Plugin",
-  "mixins": [
-    "addons.RebornWirelessCraftingGridMixin",
-    "addons.WirelessCraftingGridMixin",
-    "addons.WirelessUniversalGridMixin",
-    "core.CraftingPatternFactoryMixin",
-    "core.GridNetworkNodeMixin",
-    "core.NetworkHandlerMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+	"minVersion": "0.8.5",
+	"required": true,
+	"refmap": "refinedpolymorph.refmap.json",
+	"package": "gripe._90.refinedpolymorph.mixin",
+	"plugin": "gripe._90.refinedpolymorph.mixin.Plugin",
+	"mixins": [
+		"addons.RebornWirelessCraftingGridMixin",
+		"addons.WirelessCraftingGridMixin", "addons.WirelessUniversalGridMixin",
+		"core.CraftingPatternFactoryMixin", "core.GridNetworkNodeMixin",
+		"core.NetworkHandlerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
 }

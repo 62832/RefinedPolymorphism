@@ -8,17 +8,39 @@ version = "${version}"
 displayName = "Refined Polymorphism"
 authors = "90"
 description = "Polymorph support for Refined Storage."
+logoFile = "icon.png"
 
 [[dependencies.refinedpolymorph]]
     modId = "refinedstorage"
     mandatory = true
     versionRange = "${rsVersion}"
     ordering = "AFTER"
-    side = "SERVER"
+    side = "BOTH"
 
 [[dependencies.refinedpolymorph]]
     modId = "polymorph"
     mandatory = true
     versionRange = "${polymorphVersion}"
     ordering = "AFTER"
-    side = "SERVER"
+    side = "BOTH"
+
+[[dependencies.refinedpolymorph]]
+    modId = "refinedstorageaddons"
+    mandatory = false
+    versionRange = "${rsAddonsVersion}"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.refinedpolymorph]]
+    modId = "rebornstorage"
+    mandatory = false
+    versionRange = "${rebornVersion}"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.refinedpolymorph]]
+    modId = "universalgrid"
+    mandatory = false
+    versionRange = "${universalGridVersion}"
+    ordering = "AFTER"
+    side = "BOTH"
