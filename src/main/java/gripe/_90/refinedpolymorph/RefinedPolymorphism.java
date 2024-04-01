@@ -25,8 +25,8 @@ public class RefinedPolymorphism {
     }
 
     public static void onSelect(Recipe<?> recipe, IGrid grid) {
-        if (recipe instanceof CraftingRecipe craftingRecipe) {
-            ((CraftingGrid) grid).refinedpolymorph$setCurrentRecipe(craftingRecipe);
+        if (recipe instanceof CraftingRecipe craftingRecipe && grid instanceof CraftingGrid craftingGrid) {
+            craftingGrid.refinedpolymorph$setCurrentRecipe(craftingRecipe);
             grid.onCraftingMatrixChanged();
         }
     }

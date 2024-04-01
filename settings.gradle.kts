@@ -28,7 +28,7 @@ dependencyResolutionManagement {
             library("refinedstorage", "com.refinedmods", "refinedstorage").versionRef("refinedstorage")
 
             version("polymorph", "0.49.1")
-            library("polymorph", "curse.maven", "polymorph-388800").version("4813985")
+            library("polymorph", "curse.maven", "polymorph-388800").version("4813985-sources")
 
             version("rsaddons", "0.10.0")
             library("rsaddons", "com.refinedmods", "refinedstorageaddons").versionRef("rsaddons")

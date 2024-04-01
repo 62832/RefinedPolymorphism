@@ -1,6 +1,7 @@
 package gripe._90.refinedpolymorph;
 
 import com.illusivesoulworks.polymorph.api.PolymorphApi;
+import com.illusivesoulworks.polymorph.api.client.base.ITickingRecipesWidget;
 import com.illusivesoulworks.polymorph.client.recipe.widget.PersistentRecipesWidget;
 import com.refinedmods.refinedstorage.RS;
 import com.refinedmods.refinedstorage.screen.grid.GridScreen;
@@ -8,8 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 
-public class GridRecipeWidget extends PersistentRecipesWidget {
-    private final Slot outputSlot;
+public class GridRecipeWidget extends PersistentRecipesWidget implements ITickingRecipesWidget {
+    private Slot outputSlot;
+    private int lastMenuHeight;
     private final Player player;
 
     public GridRecipeWidget(GridScreen screen, Slot output) {
@@ -32,5 +34,16 @@ public class GridRecipeWidget extends PersistentRecipesWidget {
             RS.NETWORK_HANDLER.sendToServer(new GridRecipeSelectMessage(id));
         });
         PolymorphApi.common().getPacketDistributor().sendPlayerRecipeSelectionC2S(id);
+    }
+
+    @Override
+    public void tick() {
+        if (containerScreen.getYSize() != lastMenuHeight) {
+            PolymorphApi.client().findCraftingResultSlot(containerScreen).ifPresent(slot -> {
+                outputSlot = slot;
+                resetWidgetOffsets();
+            });
+            lastMenuHeight = containerScreen.getYSize();
+        }
     }
 }

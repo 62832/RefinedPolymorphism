@@ -32,8 +32,7 @@ public abstract class CraftingPatternFactoryMixin {
             Level unused,
             ICraftingPatternContainer container,
             ItemStack stack) {
-        var id = new ResourceLocation(stack.getOrCreateTag().getString("polymorphRecipe"));
-        var recipe = manager.byKey(id);
+        var recipe = manager.byKey(new ResourceLocation(stack.getOrCreateTag().getString("polymorphRecipe")));
         return recipe.isPresent() ? (Optional<R>) recipe : manager.getRecipeFor(type, inv, level);
     }
 }
