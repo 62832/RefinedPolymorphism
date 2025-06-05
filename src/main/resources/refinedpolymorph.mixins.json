@@ -2,12 +2,15 @@
   "minVersion": "0.8.5",
   "required": true,
   "package": "gripe._90.refinedpolymorph.mixin",
+  "plugin": "gripe._90.refinedpolymorph.mixin.Plugin",
   "mixins": [
     "AbstractCraftingGridContainerMenuAccessor",
     "CraftingGridBlockEntityMixin",
     "RecipeMatrixAccessor",
     "RecipeMatrixContainerMixin",
-    "RecipeMatrixMixin"
+    "RecipeMatrixMixin",
+    "integration.refinedstorage_quartz_arsenal.RecipeMatrixMixin",
+    "integration.refinedstorage_quartz_arsenal.WirelessCraftingGridMixin"
   ],
   "injectors": {
     "defaultRequire": 1
