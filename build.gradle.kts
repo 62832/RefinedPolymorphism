@@ -1,127 +1,65 @@
 plugins {
-    eclipse
-    idea
-    alias(libs.plugins.forge)
-    alias(libs.plugins.mixin)
-    alias(libs.plugins.spotless)
+    id("net.neoforged.moddev")
+    id("com.diffplug.spotless")
 }
 
 val modId = "refinedpolymorph"
-val modVersion = (System.getenv("REFPOLY_VERSION") ?: "0.0.0").substringBefore('-')
-val minecraftVersion = libs.versions.minecraft.get()
 
-version = "$modVersion-$minecraftVersion"
+base.archivesName = modId
+version = if (System.getenv("GITHUB_REF_TYPE") == "tag") System.getenv("GITHUB_REF_NAME") else "0.0.0"
 group = "gripe.90"
-base.archivesName.set(modId)
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-
-minecraft {
-    mappings("official", minecraftVersion)
-
-    copyIdeResources.set(true)
-
-    runs {
-        configureEach {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "info")
-            mods.create(modId).source(sourceSets.main.get())
-        }
-
-        create("client")
-        create("server")
-    }
-}
-
-repositories {
-    maven {
-        name = "CreeperHost"
-        url = uri("https://maven.creeperhost.net")
-        content {
-            includeGroup("com.refinedmods")
-        }
-    }
-
-    maven {
-        name = "CurseMaven"
-        url = uri("https://cursemaven.com")
-        content {
-            includeGroup("curse.maven")
-        }
-    }
-
-    maven {
-        name = "saps.dev"
-        url = uri("https://maven.saps.dev/releases")
-        content {
-            includeGroup("dev.latvian.mods")
-        }
-    }
-
-    maven {
-        name = "Architectury"
-        url = uri("https://maven.architectury.dev")
-        content {
-            includeGroup("dev.architectury")
-        }
-    }
-}
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
 dependencies {
-    minecraft(libs.forge)
-    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-
-    implementation(fg.deobf(libs.refinedstorage.get(), closureOf<ModuleDependency> { isTransitive = false }))
-    implementation(fg.deobf(libs.polymorph.get()))
-
-    implementation(fg.deobf(libs.rsaddons.get(), closureOf<ModuleDependency> { isTransitive = false }))
-    implementation(fg.deobf(libs.rebornstorage.get()))
-    implementation(fg.deobf(libs.universalgrid.get()))
-
-    runtimeOnly(fg.deobf(libs.kubejs.get()))
-    runtimeOnly(fg.deobf(libs.rhino.get()))
-    runtimeOnly(fg.deobf(libs.architectury.get()))
+    implementation(libs.rs2)
+    implementation(libs.polymorph)
+    implementation(libs.quartzarsenal)
 }
 
-mixin {
-    add(sourceSets.main.get(), "$modId.refmap.json")
-    config("$modId.mixins.json")
+neoForge {
+    version = libs.versions.neoforge.get()
+
+    parchment {
+        minecraftVersion = libs.versions.minecraft.get()
+        mappingsVersion = libs.versions.parchment.get()
+    }
+
+    mods {
+        create(modId) {
+            sourceSet(sourceSets.main.get())
+        }
+    }
+
+    runs {
+        create("client") {
+            client()
+            gameDirectory = file("run")
+        }
+
+        create("server") {
+            server()
+            gameDirectory = file("run/server")
+        }
+    }
 }
 
 tasks {
-    register("releaseInfo") {
-        doLast {
-            val output = System.getenv("GITHUB_OUTPUT")
-
-            if (!output.isNullOrEmpty()) {
-                val outputFile = File(output)
-                outputFile.appendText("MOD_VERSION=$modVersion\n")
-                outputFile.appendText("MINECRAFT_VERSION=$minecraftVersion\n")
-            }
-        }
-    }
-
     processResources {
-        val replaceProperties = mapOf(
-            "version" to project.version,
-            "fmlVersion" to "[${libs.versions.loader.get()},)",
-            "rsVersion" to "[${libs.versions.refinedstorage.get()},)",
-            "polymorphVersion" to "[${libs.versions.polymorph.get()},)",
-            "rsAddonsVersion" to "[${libs.versions.rsaddons.get()},)",
-            "rebornVersion" to "[${libs.versions.rebornstorage.get()},)",
-            "universalGridVersion" to "[${libs.versions.universalgrid.get()},)"
-        )
+        val props = mapOf("version" to project.version)
+        inputs.properties(props)
 
-        inputs.properties(replaceProperties)
-
-        filesMatching("META-INF/mods.toml") {
-            expand(replaceProperties)
+        filesMatching("META-INF/neoforge.mods.toml") {
+            expand(props)
         }
     }
 
     jar {
-        finalizedBy("reobfJar")
+        exclude("data")
+
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_$modId" }
+        }
     }
 
     withType<JavaCompile> {
@@ -133,34 +71,39 @@ spotless {
     kotlinGradle {
         target("*.kts")
         diktat()
+        leadingTabsToSpaces(4)
+        endWithNewline()
     }
 
     java {
-        target("src/**/java/**/*.java")
-        palantirJavaFormat()
+        target("/src/**/java/**/*.java")
         endWithNewline()
-        indentWithSpaces(4)
+        leadingTabsToSpaces(4)
         removeUnusedImports()
+        palantirJavaFormat()
         toggleOffOn()
         trimTrailingWhitespace()
 
         // courtesy of diffplug/spotless#240
         // https://github.com/diffplug/spotless/issues/240#issuecomment-385206606
-        custom("noWildcardImports") {
-            if (it.contains("*;\n")) {
-                throw Error("No wildcard imports allowed")
-            }
+        // also, ew (7.x): https://github.com/diffplug/spotless/issues/2387#issuecomment-2576459901
+        custom("noWildcardImports", object : java.io.Serializable, com.diffplug.spotless.FormatterFunc {
+            override fun apply(input: String): String {
+                if (input.contains("*;\n")) {
+                    throw GradleException("No wildcard imports allowed.")
+                }
 
-            it
-        }
+                return input
+            }
+        })
 
         bumpThisNumberIfACustomStepChanges(1)
     }
 
     json {
-        target("src/*/resources/**/*.json")
-        targetExclude("src/generated/resources/**")
-        rome()
+        target("src/**/resources/**/*.json")
+        biome()
+        leadingTabsToSpaces(2)
         endWithNewline()
     }
 }

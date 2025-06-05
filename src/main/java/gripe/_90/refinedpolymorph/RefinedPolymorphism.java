@@ -1,44 +1,42 @@
 package gripe._90.refinedpolymorph;
 
 import com.illusivesoulworks.polymorph.api.PolymorphApi;
-import com.refinedmods.refinedstorage.api.network.grid.IGrid;
-import com.refinedmods.refinedstorage.blockentity.grid.GridBlockEntity;
-import com.refinedmods.refinedstorage.container.GridContainerMenu;
-import com.refinedmods.refinedstorage.screen.grid.GridScreen;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import com.refinedmods.refinedstorage.common.grid.CraftingGridBlockEntity;
+import com.refinedmods.refinedstorage.common.support.RecipeMatrixContainer;
+import gripe._90.refinedpolymorph.mixin.AbstractCraftingGridContainerMenuAccessor;
+import gripe._90.refinedpolymorph.mixin.RecipeMatrixAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.fml.common.Mod;
 
-@Mod("refinedpolymorph")
+@Mod(RefinedPolymorphism.MODID)
 public class RefinedPolymorphism {
+    public static final String MODID = "refinedpolymorph";
+
     public RefinedPolymorphism() {
-        var common = PolymorphApi.common();
-        common.registerContainer2BlockEntity(
-                menu -> menu instanceof GridContainerMenu grid ? grid.getBlockEntity() : null);
-        common.registerBlockEntity2RecipeData(
-                be -> be instanceof GridBlockEntity grid ? new GridBlockEntityRecipeData(grid) : null);
+        PolymorphApi.getInstance().registerMenu(menu -> {
+            if (menu instanceof AbstractCraftingGridContainerMenuAccessor craftingGrid
+                    && craftingGrid.getCraftingGrid() instanceof BlockEntity be) {
+                return be;
+            }
 
-        if (FMLEnvironment.dist.isClient()) {
-            Client.registerWidget();
-        }
+            return null;
+        });
+
+        PolymorphApi.getInstance().registerBlockEntity(be -> {
+            if (be instanceof CraftingGridBlockEntity craftingGrid) {
+                return new CraftingGridRecipeData(craftingGrid);
+            }
+
+            return null;
+        });
     }
 
-    public static void onSelect(Recipe<?> recipe, IGrid grid) {
-        if (recipe instanceof CraftingRecipe craftingRecipe && grid instanceof CraftingGrid craftingGrid) {
-            craftingGrid.refinedpolymorph$setCurrentRecipe(craftingRecipe);
-            grid.onCraftingMatrixChanged();
-        }
-    }
+    public static void onSelect(RecipeMatrixContainer container) {
+        var matrix = (RecipeMatrixAccessor) ((MatrixAwareContainer) container).refpoly$getMatrix();
 
-    private static class Client {
-        private static void registerWidget() {
-            var client = PolymorphApi.client();
-            client.registerWidget(screen -> screen instanceof GridScreen grid
-                    ? client.findCraftingResultSlot(grid)
-                            .map(slot -> new GridRecipeWidget(grid, slot))
-                            .orElse(null)
-                    : null);
+        if (matrix != null) {
+            matrix.setCurrentRecipe(null);
+            container.changed();
         }
     }
 }

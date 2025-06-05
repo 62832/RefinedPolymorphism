@@ -1,22 +1,56 @@
 name: Build
+
 on:
-  - pull_request
-  - push
+  pull_request:
+    # Only on branches, not tags/releases
+    branches: ["**"]
+  push:
+    branches: ["*"]
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: 'temurin'
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@v2
-      - name: Build
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build release files
         run: ./gradlew build
+      - name: Publish release files
+        if: ${{ github.event_name == 'release' }}
+        uses: Kir-Antipov/mc-publish@995edadc13559a8b28d0b7e6571229f067ec7659
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          curseforge-id: 943086
+          curseforge-token: ${{ secrets.CURSEFORGE_API_KEY }}
+
+          modrinth-id: HwPAr6Pu
+          modrinth-token: ${{ secrets.MODRINTH_API_KEY }}
+
+          version: ${{ steps.build.outputs.MOD_VERSION }}-${{ steps.build.outputs.MINECRAFT_VERSION }}
+          game-versions: ${{ steps.build.outputs.MINECRAFT_VERSION }}
+          dependencies: |
+            refinedstorage(required){curseforge:243076}{modrinth:KDvYkUg3}
+            polymorph(required){curseforge:388800}{modrinth:tagwiZkJ}
+#           refinedstorageaddons(optional){curseforge:272302}{modrinth:Z4Z5ccuT}
+#           rebornstorage(optional){curseforge:256662}
+#           universalgrid(optional){curseforge:536160}
