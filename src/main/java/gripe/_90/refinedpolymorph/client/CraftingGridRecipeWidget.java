@@ -2,6 +2,7 @@ package gripe._90.refinedpolymorph.client;
 
 import com.illusivesoulworks.polymorph.api.PolymorphApi;
 import com.illusivesoulworks.polymorph.api.client.base.PersistentRecipesWidget;
+import com.refinedmods.refinedstorage.common.grid.AbstractCraftingGridContainerMenu;
 import com.refinedmods.refinedstorage.common.grid.screen.CraftingGridScreen;
 import gripe._90.refinedpolymorph.GridRecipeSelectPacket;
 import gripe._90.refinedpolymorph.mixin.AbstractCraftingGridContainerMenuAccessor;
@@ -11,18 +12,13 @@ import net.minecraft.world.inventory.Slot;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CraftingGridRecipeWidget extends PersistentRecipesWidget {
+    private final AbstractCraftingGridContainerMenu menu;
     private Slot outputSlot;
 
     public CraftingGridRecipeWidget(CraftingGridScreen screen) {
         super(screen);
-        var menu = (AbstractCraftingGridContainerMenuAccessor) screen.getMenu();
-
-        for (var slot : screen.getMenu().slots) {
-            if (slot.container == menu.getCraftingGrid().getCraftingResult()) {
-                outputSlot = slot;
-                break;
-            }
-        }
+        menu = screen.getMenu();
+        initOutputSlot();
     }
 
     @SuppressWarnings("resource")
@@ -44,5 +40,23 @@ public class CraftingGridRecipeWidget extends PersistentRecipesWidget {
     @Override
     public Slot getOutputSlot() {
         return outputSlot;
+    }
+
+    @Override
+    protected void resetWidgetOffsets() {
+        initOutputSlot();
+        super.resetWidgetOffsets();
+    }
+
+    private void initOutputSlot() {
+        for (var slot : menu.slots) {
+            if (slot.container
+                    == ((AbstractCraftingGridContainerMenuAccessor) menu)
+                            .getCraftingGrid()
+                            .getCraftingResult()) {
+                outputSlot = slot;
+                break;
+            }
+        }
     }
 }
