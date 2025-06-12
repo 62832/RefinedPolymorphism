@@ -4,11 +4,14 @@
   "package": "gripe._90.refinedpolymorph.mixin",
   "plugin": "gripe._90.refinedpolymorph.mixin.Plugin",
   "mixins": [
-    "AbstractCraftingGridContainerMenuAccessor",
-    "CraftingGridBlockEntityMixin",
-    "RecipeMatrixAccessor",
-    "RecipeMatrixContainerMixin",
     "RecipeMatrixMixin",
+    "accessor.AbstractCraftingGridContainerMenuAccessor",
+    "accessor.PatternGridBlockEntityAccessor",
+    "accessor.PatternGridContainerMenuAccessor",
+    "accessor.RecipeMatrixAccessor",
+    "duck.CraftingGridBlockEntityMixin",
+    "duck.PatternGridBlockEntityMixin",
+    "duck.RecipeMatrixContainerMixin",
     "integration.refinedstorage_quartz_arsenal.RecipeMatrixMixin",
     "integration.refinedstorage_quartz_arsenal.WirelessCraftingGridMixin"
   ],

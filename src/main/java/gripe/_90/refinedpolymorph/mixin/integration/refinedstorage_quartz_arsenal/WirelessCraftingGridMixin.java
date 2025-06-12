@@ -2,10 +2,9 @@ package gripe._90.refinedpolymorph.mixin.integration.refinedstorage_quartz_arsen
 
 import com.refinedmods.refinedstorage.common.api.support.network.item.NetworkItemContext;
 import com.refinedmods.refinedstorage.common.api.support.slotreference.SlotReference;
-import com.refinedmods.refinedstorage.common.grid.CraftingGrid;
 import com.refinedmods.refinedstorage.common.support.RecipeMatrix;
-import gripe._90.refinedpolymorph.HostAwareMatrix;
-import gripe._90.refinedpolymorph.PlayerAwareGrid;
+import gripe._90.refinedpolymorph.duck.HostAwareMatrix;
+import gripe._90.refinedpolymorph.duck.PlayerAwareGrid;
 import javax.annotation.Nullable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -32,7 +31,7 @@ public abstract class WirelessCraftingGridMixin implements PlayerAwareGrid {
     private void attachMatrixHost(
             Player player, NetworkItemContext context, SlotReference slotReference, CallbackInfo ci) {
         if (craftingRecipe != null) {
-            ((HostAwareMatrix) craftingRecipe).refpoly$setHost((CraftingGrid) this);
+            ((HostAwareMatrix) craftingRecipe).refpoly$setHost(this);
         }
 
         refpoly$player = player;

@@ -3,12 +3,11 @@ package gripe._90.refinedpolymorph.mixin;
 import com.illusivesoulworks.polymorph.api.PolymorphApi;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.refinedmods.refinedstorage.common.grid.CraftingGrid;
-import com.refinedmods.refinedstorage.common.grid.CraftingGridBlockEntity;
+import com.refinedmods.refinedstorage.common.grid.AbstractGridBlockEntity;
 import com.refinedmods.refinedstorage.common.support.RecipeMatrix;
 import com.refinedmods.refinedstorage.common.support.RecipeMatrixContainer;
-import gripe._90.refinedpolymorph.HostAwareMatrix;
-import gripe._90.refinedpolymorph.MatrixAwareContainer;
+import gripe._90.refinedpolymorph.duck.HostAwareMatrix;
+import gripe._90.refinedpolymorph.duck.MatrixAwareContainer;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -28,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = RecipeMatrix.class, priority = 500)
 public abstract class RecipeMatrixMixin<T extends Recipe<I>, I extends RecipeInput> implements HostAwareMatrix {
     @Unique
-    private CraftingGrid refpoly$host;
+    private Object refpoly$host;
 
     @Shadow
     @Final
@@ -43,12 +42,12 @@ public abstract class RecipeMatrixMixin<T extends Recipe<I>, I extends RecipeInp
     private Function<RecipeMatrixContainer, I> inputProvider;
 
     @Override
-    public void refpoly$setHost(CraftingGrid host) {
+    public void refpoly$setHost(Object host) {
         refpoly$host = host;
     }
 
     @Override
-    public CraftingGrid refpoly$getHost() {
+    public Object refpoly$getHost() {
         return refpoly$host;
     }
 
@@ -76,7 +75,7 @@ public abstract class RecipeMatrixMixin<T extends Recipe<I>, I extends RecipeInp
             Optional<RecipeHolder<T>> instance,
             Function<RecipeHolder<T>, T> mapper,
             @Local(argsOnly = true) Level level) {
-        if (refpoly$host instanceof CraftingGridBlockEntity be) {
+        if (refpoly$host instanceof AbstractGridBlockEntity be) {
             return PolymorphApi.getInstance()
                     .getRecipeManager()
                     .getBlockEntityRecipe(recipeType, inputProvider.apply(matrix), level, be);

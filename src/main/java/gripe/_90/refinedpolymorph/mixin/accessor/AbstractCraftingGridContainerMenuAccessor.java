@@ -1,4 +1,4 @@
-package gripe._90.refinedpolymorph.mixin;
+package gripe._90.refinedpolymorph.mixin.accessor;
 
 import com.refinedmods.refinedstorage.common.grid.AbstractCraftingGridContainerMenu;
 import com.refinedmods.refinedstorage.common.grid.CraftingGrid;

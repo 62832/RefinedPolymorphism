@@ -1,10 +1,13 @@
 package gripe._90.refinedpolymorph;
 
 import com.illusivesoulworks.polymorph.api.PolymorphApi;
+import com.refinedmods.refinedstorage.common.autocrafting.patterngrid.PatternGridBlockEntity;
 import com.refinedmods.refinedstorage.common.grid.CraftingGridBlockEntity;
 import com.refinedmods.refinedstorage.common.support.RecipeMatrixContainer;
-import gripe._90.refinedpolymorph.mixin.AbstractCraftingGridContainerMenuAccessor;
-import gripe._90.refinedpolymorph.mixin.RecipeMatrixAccessor;
+import gripe._90.refinedpolymorph.duck.MatrixAwareContainer;
+import gripe._90.refinedpolymorph.mixin.accessor.AbstractCraftingGridContainerMenuAccessor;
+import gripe._90.refinedpolymorph.mixin.accessor.PatternGridContainerMenuAccessor;
+import gripe._90.refinedpolymorph.mixin.accessor.RecipeMatrixAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -21,12 +24,21 @@ public class RefinedPolymorphism {
                 return be;
             }
 
+            if (menu instanceof PatternGridContainerMenuAccessor patternGrid
+                    && patternGrid.getPatternGrid() instanceof BlockEntity be) {
+                return be;
+            }
+
             return null;
         });
 
         PolymorphApi.getInstance().registerBlockEntity(be -> {
             if (be instanceof CraftingGridBlockEntity craftingGrid) {
                 return new CraftingGridRecipeData(craftingGrid);
+            }
+
+            if (be instanceof PatternGridBlockEntity patternGrid) {
+                return new PatternGridRecipeData(patternGrid);
             }
 
             return null;

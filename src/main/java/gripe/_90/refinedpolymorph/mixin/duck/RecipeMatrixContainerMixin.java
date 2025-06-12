@@ -1,8 +1,8 @@
-package gripe._90.refinedpolymorph.mixin;
+package gripe._90.refinedpolymorph.mixin.duck;
 
 import com.refinedmods.refinedstorage.common.support.RecipeMatrix;
 import com.refinedmods.refinedstorage.common.support.RecipeMatrixContainer;
-import gripe._90.refinedpolymorph.MatrixAwareContainer;
+import gripe._90.refinedpolymorph.duck.MatrixAwareContainer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import org.jetbrains.annotations.Nullable;

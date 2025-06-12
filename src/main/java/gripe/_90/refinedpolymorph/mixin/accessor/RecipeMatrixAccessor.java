@@ -1,4 +1,4 @@
-package gripe._90.refinedpolymorph.mixin;
+package gripe._90.refinedpolymorph.mixin.accessor;
 
 import com.refinedmods.refinedstorage.common.support.RecipeMatrix;
 import net.minecraft.world.item.crafting.Recipe;

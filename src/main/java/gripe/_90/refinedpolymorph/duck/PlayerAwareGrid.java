@@ -1,4 +1,4 @@
-package gripe._90.refinedpolymorph;
+package gripe._90.refinedpolymorph.duck;
 
 import net.minecraft.world.entity.player.Player;
 
