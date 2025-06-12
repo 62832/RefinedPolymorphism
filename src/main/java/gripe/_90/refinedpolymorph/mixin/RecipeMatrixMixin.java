@@ -75,7 +75,7 @@ public abstract class RecipeMatrixMixin<T extends Recipe<I>, I extends RecipeInp
             Optional<RecipeHolder<T>> instance,
             Function<RecipeHolder<T>, T> mapper,
             @Local(argsOnly = true) Level level) {
-        if (refpoly$host instanceof AbstractGridBlockEntity be) {
+        if (refpoly$getHost() instanceof AbstractGridBlockEntity be) {
             return PolymorphApi.getInstance()
                     .getRecipeManager()
                     .getBlockEntityRecipe(recipeType, inputProvider.apply(matrix), level, be);
