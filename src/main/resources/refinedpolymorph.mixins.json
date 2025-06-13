@@ -16,8 +16,8 @@
     "integration.refinedstorage_quartz_arsenal.WirelessCraftingGridMixin"
   ],
   "client": [
-    "client.AbstractRecipesWidgetAccessor",
-    "client.AbstractStretchingScreenMixin"
+    "client.AbstractStretchingScreenMixin",
+    "client.PatternGridScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

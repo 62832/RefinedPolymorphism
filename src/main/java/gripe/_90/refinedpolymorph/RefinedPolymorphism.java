@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import org.jetbrains.annotations.Nullable;
 
 @Mod(RefinedPolymorphism.MODID)
 public class RefinedPolymorphism {
@@ -51,7 +52,11 @@ public class RefinedPolymorphism {
                         GridRecipeSelectPacket::handle));
     }
 
-    public static void onSelect(RecipeMatrixContainer container) {
+    public static void onSelect(@Nullable RecipeMatrixContainer container) {
+        if (container == null) {
+            return;
+        }
+
         var matrix = (RecipeMatrixAccessor) ((MatrixAwareContainer) container).refpoly$getMatrix();
 
         if (matrix != null) {

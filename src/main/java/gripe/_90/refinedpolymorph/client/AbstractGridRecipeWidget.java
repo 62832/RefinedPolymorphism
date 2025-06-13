@@ -46,7 +46,7 @@ public abstract class AbstractGridRecipeWidget<M extends AbstractGridContainerMe
     }
 
     @Override
-    protected void resetWidgetOffsets() {
+    public void resetWidgetOffsets() {
         initOutputSlot();
         super.resetWidgetOffsets();
     }
