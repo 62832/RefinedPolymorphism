@@ -34,7 +34,7 @@ neoForge {
     runs {
         create("client") {
             client()
-            gameDirectory = file("run")
+            gameDirectory = file("run/client")
         }
 
         create("server") {

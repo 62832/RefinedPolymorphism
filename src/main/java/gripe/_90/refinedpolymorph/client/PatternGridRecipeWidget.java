@@ -15,7 +15,7 @@ public class PatternGridRecipeWidget extends AbstractGridRecipeWidget<PatternGri
         var accessed = (PatternGridContainerMenuAccessor) menu;
         return switch (accessed.callGetPatternType()) {
             case CRAFTING -> (ResultContainer) accessed.getCraftingResult();
-            case STONECUTTER -> (ResultContainer) accessed.getSmithingTableResult();
+            case SMITHING_TABLE -> (ResultContainer) accessed.getSmithingTableResult();
             default -> null;
         };
     }

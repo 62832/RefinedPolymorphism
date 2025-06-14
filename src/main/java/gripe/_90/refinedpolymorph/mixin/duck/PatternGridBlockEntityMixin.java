@@ -1,7 +1,10 @@
 package gripe._90.refinedpolymorph.mixin.duck;
 
+import com.illusivesoulworks.polymorph.api.PolymorphApi;
 import com.refinedmods.refinedstorage.common.autocrafting.patterngrid.PatternGridBlockEntity;
+import com.refinedmods.refinedstorage.common.autocrafting.patterngrid.PatternType;
 import com.refinedmods.refinedstorage.common.support.RecipeMatrix;
+import gripe._90.refinedpolymorph.PatternGridRecipeData;
 import gripe._90.refinedpolymorph.duck.HostAwareMatrix;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -30,5 +33,14 @@ public abstract class PatternGridBlockEntityMixin {
     private void attachMatrixHost(BlockPos pos, BlockState state, CallbackInfo ci) {
         ((HostAwareMatrix) craftingRecipe).refpoly$setHost(this);
         ((HostAwareMatrix) smithingTableRecipe).refpoly$setHost(this);
+    }
+
+    @Inject(method = "setPatternType", at = @At("RETURN"))
+    private void updateRecipeData(PatternType patternType, CallbackInfo ci) {
+        var recipeData = PolymorphApi.getInstance().getBlockEntityRecipeData((PatternGridBlockEntity) (Object) this);
+
+        if (recipeData instanceof PatternGridRecipeData gridRecipeData) {
+            gridRecipeData.switchPatternType(patternType);
+        }
     }
 }
