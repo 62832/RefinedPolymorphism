@@ -51,6 +51,4 @@ jobs:
           dependencies: |
             refinedstorage(required){curseforge:243076}{modrinth:KDvYkUg3}
             polymorph(required){curseforge:388800}{modrinth:tagwiZkJ}
-#           refinedstorageaddons(optional){curseforge:272302}{modrinth:Z4Z5ccuT}
-#           rebornstorage(optional){curseforge:256662}
-#           universalgrid(optional){curseforge:536160}
+            refinedstorage_quartz_arsenal(optional){curseforge:1230483}{modrinth:gnwGOmBf}
