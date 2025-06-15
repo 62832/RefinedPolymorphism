@@ -13,7 +13,11 @@
     "duck.PatternGridBlockEntityMixin",
     "duck.RecipeMatrixContainerMixin",
     "integration.refinedstorage_quartz_arsenal.RecipeMatrixMixin",
-    "integration.refinedstorage_quartz_arsenal.WirelessCraftingGridMixin"
+    "integration.refinedstorage_quartz_arsenal.WirelessCraftingGridMixin",
+    "pattern.PatternGridBlockEntityMixin",
+    "pattern.PatternResolverMixin",
+    "pattern.ResolvedCraftingPatternAccessor",
+    "pattern.ResolvedSmithingTablePatternAccessor"
   ],
   "client": [
     "client.AbstractStretchingScreenMixin",

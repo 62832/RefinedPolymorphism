@@ -45,6 +45,7 @@ public class RefinedPolymorphism {
             return null;
         });
 
+        ExtendedPatternComponents.DR.register(eventBus);
         eventBus.addListener(RegisterPayloadHandlersEvent.class, event -> event.registrar("1")
                 .playToServer(
                         GridRecipeSelectPacket.TYPE,
