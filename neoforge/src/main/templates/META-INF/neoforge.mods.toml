@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+
+logoFile = "icon.png"
+authors = "90"
+license = "LGPLv3.0"
+
+[[mods]]
+modId = "refinedpolymorph"
+version = "$version"
+displayName = "Refined Polymorphism"
+description = "Polymorph support for Refined Storage."
+
+[[mixins]]
+config = "refinedpolymorph.mixins.json"
+
+[[dependencies.refinedpolymorph]]
+modId = "refinedstorage"
+versionRange = "[2.0.0-beta.2,)"
+
+[[dependencies.refinedpolymorph]]
+modId = "polymorph"
+versionRange = "[1.0.6,)"
+
+[[dependencies.refinedpolymorph]]
+modId = "refinedstorage_quartz_arsenal"
+versionRange = "[1,)"
+type = "optional"

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "refinedpolymorph",
+  "version": "$version",
+  "name": "Refined Polymorphism",
+  "description": "Polymorph support for Refined Storage.",
+  "entrypoints": {
+    "main": ["gripe._90.refinedpolymorph.fabric.RefinedPolymorphismFabric"],
+    "client": [
+      "gripe._90.refinedpolymorph.fabric.client.RefinedPolymorphismFabricClient"
+    ]
+  },
+  "mixins": ["refinedpolymorph.mixins.json"],
+  "depends": {
+    "refinedstorage": ">=2.0.0-beta.2",
+    "polymorph": ">=1.0.6"
+  },
+  "suggests": {
+    "refinedstorage_quartz_arsenal": ">=1"
+  }
+}

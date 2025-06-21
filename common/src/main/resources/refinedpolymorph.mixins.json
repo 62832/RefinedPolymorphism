@@ -1,0 +1,29 @@
+{
+  "minVersion": "0.8.5",
+  "required": true,
+  "package": "gripe._90.refinedpolymorph.mixin",
+  "plugin": "gripe._90.refinedpolymorph.mixin.Plugin",
+  "mixins": [
+    "RecipeMatrixMixin",
+    "accessor.AbstractCraftingGridContainerMenuAccessor",
+    "accessor.PatternGridBlockEntityAccessor",
+    "accessor.PatternGridContainerMenuAccessor",
+    "accessor.RecipeMatrixAccessor",
+    "duck.CraftingGridBlockEntityMixin",
+    "duck.PatternGridBlockEntityMixin",
+    "duck.RecipeMatrixContainerMixin",
+    "integration.refinedstorage_quartz_arsenal.RecipeMatrixMixin",
+    "integration.refinedstorage_quartz_arsenal.WirelessCraftingGridMixin",
+    "pattern.PatternGridBlockEntityMixin",
+    "pattern.PatternResolverMixin",
+    "pattern.ResolvedCraftingPatternAccessor",
+    "pattern.ResolvedSmithingTablePatternAccessor"
+  ],
+  "client": [
+    "client.AbstractStretchingScreenMixin",
+    "client.PatternGridScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

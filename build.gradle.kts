@@ -1,166 +1,92 @@
 plugins {
-    eclipse
-    idea
-    alias(libs.plugins.forge)
-    alias(libs.plugins.mixin)
-    alias(libs.plugins.spotless)
+    id("refinedarchitect.root")
+    id("refinedarchitect.base")
+    id("com.diffplug.spotless")
 }
 
 val modId = "refinedpolymorph"
-val modVersion = (System.getenv("REFPOLY_VERSION") ?: "0.0.0").substringBefore('-')
-val minecraftVersion = libs.versions.minecraft.get()
+base.archivesName = modId
 
-version = "$modVersion-$minecraftVersion"
-group = "gripe.90"
-base.archivesName.set(modId)
-
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-
-minecraft {
-    mappings("official", minecraftVersion)
-
-    copyIdeResources.set(true)
-
-    runs {
-        configureEach {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "info")
-            mods.create(modId).source(sourceSets.main.get())
-        }
-
-        create("client")
-        create("server")
-    }
+tasks.withType<Jar> {
+    enabled = false
 }
 
-repositories {
-    maven {
-        name = "CreeperHost"
-        url = uri("https://maven.creeperhost.net")
-        content {
-            includeGroup("com.refinedmods")
+allprojects {
+    apply(plugin = "com.diffplug.spotless")
+    apply(plugin = "checkstyle")
+
+    version = if (System.getenv("GITHUB_REF_TYPE") == "tag") System.getenv("GITHUB_REF_NAME") else "0.0.0"
+    group = "gripe._90.$modId"
+
+    checkstyle {
+        // disable in favour of Spotless
+        sourceSets = emptyList()
+    }
+
+    tasks {
+        withType<Jar> {
+            exclude("data")
         }
     }
 
-    maven {
-        name = "CurseMaven"
-        url = uri("https://cursemaven.com")
-        content {
-            includeGroup("curse.maven")
+    repositories {
+        mavenCentral()
+
+        maven {
+            url = uri("https://maven.pkg.github.com/refinedmods/refinedstorage2")
+            credentials {
+                username = "anything"
+                password = "\u0067hp_oGjcDFCn8jeTzIj4Ke9pLoEVtpnZMP4VQgaX"
+            }
         }
-    }
 
-    maven {
-        name = "saps.dev"
-        url = uri("https://maven.saps.dev/releases")
-        content {
-            includeGroup("dev.latvian.mods")
-        }
-    }
-
-    maven {
-        name = "Architectury"
-        url = uri("https://maven.architectury.dev")
-        content {
-            includeGroup("dev.architectury")
-        }
-    }
-}
-
-dependencies {
-    minecraft(libs.forge)
-    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-
-    implementation(fg.deobf(libs.refinedstorage.get(), closureOf<ModuleDependency> { isTransitive = false }))
-    implementation(fg.deobf(libs.polymorph.get()))
-
-    implementation(fg.deobf(libs.rsaddons.get(), closureOf<ModuleDependency> { isTransitive = false }))
-    implementation(fg.deobf(libs.rebornstorage.get()))
-    implementation(fg.deobf(libs.universalgrid.get()))
-
-    runtimeOnly(fg.deobf(libs.kubejs.get()))
-    runtimeOnly(fg.deobf(libs.rhino.get()))
-    runtimeOnly(fg.deobf(libs.architectury.get()))
-}
-
-mixin {
-    add(sourceSets.main.get(), "$modId.refmap.json")
-    config("$modId.mixins.json")
-}
-
-tasks {
-    register("releaseInfo") {
-        doLast {
-            val output = System.getenv("GITHUB_OUTPUT")
-
-            if (!output.isNullOrEmpty()) {
-                val outputFile = File(output)
-                outputFile.appendText("MOD_VERSION=$modVersion\n")
-                outputFile.appendText("MINECRAFT_VERSION=$minecraftVersion\n")
+        maven {
+            name = "Curse Maven"
+            url = uri("https://cursemaven.com")
+            content {
+                includeGroup("curse.maven")
             }
         }
     }
 
-    processResources {
-        val replaceProperties = mapOf(
-            "version" to project.version,
-            "fmlVersion" to "[${libs.versions.loader.get()},)",
-            "rsVersion" to "[${libs.versions.refinedstorage.get()},)",
-            "polymorphVersion" to "[${libs.versions.polymorph.get()},)",
-            "rsAddonsVersion" to "[${libs.versions.rsaddons.get()},)",
-            "rebornVersion" to "[${libs.versions.rebornstorage.get()},)",
-            "universalGridVersion" to "[${libs.versions.universalgrid.get()},)"
-        )
-
-        inputs.properties(replaceProperties)
-
-        filesMatching("META-INF/mods.toml") {
-            expand(replaceProperties)
-        }
-    }
-
-    jar {
-        finalizedBy("reobfJar")
-    }
-
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-    }
-}
-
-spotless {
-    kotlinGradle {
-        target("*.kts")
-        diktat()
-    }
-
-    java {
-        target("src/**/java/**/*.java")
-        palantirJavaFormat()
-        endWithNewline()
-        indentWithSpaces(4)
-        removeUnusedImports()
-        toggleOffOn()
-        trimTrailingWhitespace()
-
-        // courtesy of diffplug/spotless#240
-        // https://github.com/diffplug/spotless/issues/240#issuecomment-385206606
-        custom("noWildcardImports") {
-            if (it.contains("*;\n")) {
-                throw Error("No wildcard imports allowed")
-            }
-
-            it
+    spotless {
+        kotlinGradle {
+            target("*.kts")
+            diktat()
+            leadingTabsToSpaces(4)
+            endWithNewline()
         }
 
-        bumpThisNumberIfACustomStepChanges(1)
-    }
+        java {
+            target("/src/**/java/**/*.java")
+            endWithNewline()
+            leadingTabsToSpaces(4)
+            removeUnusedImports()
+            palantirJavaFormat()
+            toggleOffOn()
+            trimTrailingWhitespace()
 
-    json {
-        target("src/*/resources/**/*.json")
-        targetExclude("src/generated/resources/**")
-        rome()
-        endWithNewline()
+            // courtesy of diffplug/spotless#240
+            // https://github.com/diffplug/spotless/issues/240#issuecomment-385206606
+            // also, ew (7.x): https://github.com/diffplug/spotless/issues/2387#issuecomment-2576459901
+            custom("noWildcardImports", object : java.io.Serializable, com.diffplug.spotless.FormatterFunc {
+                override fun apply(input: String): String {
+                    if (input.contains("*;\n")) {
+                        throw GradleException("No wildcard imports allowed.")
+                    }
+
+                    return input
+                }
+            })
+
+            bumpThisNumberIfACustomStepChanges(1)
+        }
+
+        json {
+            target("src/**/resources/**/*.json")
+            biome()
+            leadingTabsToSpaces(2)
+            endWithNewline()
+        }
     }
 }
